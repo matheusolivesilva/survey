@@ -1,3 +1,4 @@
+import Question from "../../domain/entity/Question";
 import QuestionDTO from "./QuestionDTO";
 
 export default class SurveyDTO {
@@ -6,6 +7,6 @@ export default class SurveyDTO {
     readonly targetAudience: string,
     readonly stars: number,
     readonly customerEmail: string,
-    readonly questions: QuestionDTO[]
+    readonly questions: Question[]
   ) {}
 }

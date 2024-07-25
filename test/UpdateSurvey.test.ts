@@ -1,5 +1,6 @@
 import CreateSurvey from "../src/application/usecase/CreateSurvey";
 import UpdateSurvey from "../src/application/usecase/UpdateSurvey";
+import Question from "../src/domain/entity/Question";
 import MongoDBConnection from "../src/infra/database/MongoDBConnection";
 import SurveyRepositoryFactory from "../src/infra/repository/SurveyRepositoryFactory";
 
@@ -9,13 +10,10 @@ test("Should update a survey", async () => {
   const surveyRepository = repositoryFactory.create();
 
   const name = "Pesquisa de satisfação";
+
   const questions = [
-    {
-      statement: "How often do you lift weights?",
-    },
-    {
-      statement: "How many times per week to you workout?",
-    },
+    new Question("How often do you lift weights?"),
+    new Question("How many times per week do you workout?"),
   ];
   const input = {
     name,
@@ -26,19 +24,15 @@ test("Should update a survey", async () => {
   const surveyToUpdate = await createSurvey.execute(input);
 
   surveyToUpdate.name = "Pesquisa de esportista";
-  surveyToUpdate.questions = [
-    {
-      statement: "How many times per week to you workout?",
-    },
-  ];
+  surveyToUpdate.questions[3].statement = "How many times per week do you run?";
   const updateSurvey = new UpdateSurvey(surveyRepository);
   const updatedSurvey = await updateSurvey.execute(surveyToUpdate);
 
   expect(updatedSurvey?.code).toBe(surveyToUpdate.code);
   expect(updatedSurvey?.name).not.toBe(name);
-  expect(updatedSurvey?.questions).toHaveLength(4);
-  expect(updatedSurvey?.questions[0].statement).toBe(
-    "How many times per week to you workout?"
+  expect(updatedSurvey?.questions).toHaveLength(5);
+  expect(updatedSurvey?.questions[3].statement).toBe(
+    "How many times per week do you run?"
   );
   await connection.close();
 });

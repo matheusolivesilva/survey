@@ -10,7 +10,6 @@ export default class Survey {
     readonly updatedAt: Date
   ) {
     this.validateQuestions(questions);
-    this.generateDefaultQuestions();
   }
 
   private generateDefaultQuestions(): void {
@@ -28,7 +27,9 @@ export default class Survey {
   }
 
   static create(code: string, name: string, questions: Question[]): Survey {
-    return new Survey(code, name, questions, new Date(), new Date());
+    const survey = new Survey(code, name, questions, new Date(), new Date());
+    survey.generateDefaultQuestions();
+    return survey;
   }
 
   static buildExistingSurvey(

@@ -9,14 +9,12 @@ export default class UpdateSurvey {
     const savedSurvey = await this.surveyRepository.get(input.code);
     if (!savedSurvey) return null;
 
-    const questions = input.questions.map(
-      (question) => new Question(question.statement)
-    );
+    const questionsToSave = this.updateQuestions(input, savedSurvey);
 
     const surveyToUpdate = Survey.buildExistingSurvey(
       input.code,
       input.name,
-      questions,
+      questionsToSave,
       savedSurvey?.createdAt ?? new Date()
     );
 
@@ -24,8 +22,35 @@ export default class UpdateSurvey {
       input.code,
       surveyToUpdate
     );
-
     return survey;
+  }
+
+  private updateQuestions(input: Input, savedSurvey: Survey) {
+    const newQuestions: Question[] = [];
+
+    input.questions.forEach((question) => {
+      if (!question.code) {
+        newQuestions.push(new Question(question.statement));
+      }
+
+      savedSurvey.questions.forEach((savedQuestion) => {
+        if (savedQuestion.code === question.code) {
+          savedQuestion.statement = question.statement;
+        }
+      });
+    });
+
+    const questionsToSave = [...savedSurvey.questions, ...newQuestions];
+
+    const withoutDuplicates = questionsToSave.filter(
+      (question, index, self) =>
+        index ===
+        self.findIndex(
+          (questionToCompare) =>
+            questionToCompare.statement === question.statement
+        )
+    );
+    return withoutDuplicates;
   }
 }
 

@@ -28,8 +28,8 @@ test("Should create a survey", async () => {
   expect(surveyResponse.code).toBe(createdSurvey.code);
   expect(surveyResponse.name).toBe("Pesquisa de satisfação");
   expect(surveyResponse.questions).toHaveLength(5);
-  expect(surveyResponse.questions[0].statement).toBe(
-    "How often do you lift weights?"
+  expect(surveyResponse.questions[0].statement).toBe("Please, fill your email");
+  expect(surveyResponse.questions[4].statement).toBe(
+    "How many times per week to you workout?"
   );
-  expect(surveyResponse.questions[4].statement).toBe("Please, fill your email");
 });
