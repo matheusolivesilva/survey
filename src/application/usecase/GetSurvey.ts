@@ -13,8 +13,5 @@ export default class GetSurvey {
 type Output = {
   code: string;
   name: string;
-  targetAudience: string;
-  stars: number;
-  customerEmail: string;
   questions: Question[];
 };

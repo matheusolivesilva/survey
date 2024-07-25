@@ -4,11 +4,9 @@ import Survey from "../../../../domain/entity/Survey";
 const schema = new Schema<Survey>({
   code: { type: String, required: true },
   name: { type: String, required: true },
-  targetAudience: { type: String, required: true },
-  stars: { type: Number, required: true },
-  customerEmail: { type: String, required: true },
   questions: [
     {
+      code: { type: String, required: true },
       statement: { type: String, required: true },
     },
   ],

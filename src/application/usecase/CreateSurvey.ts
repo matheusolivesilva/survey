@@ -7,23 +7,16 @@ export default class CreateSurvey {
 
   async execute(input: Input): Promise<Output> {
     const code = crypto.randomUUID();
-    const survey = Survey.create(
-      code,
-      input.name,
-      input.targetAudience,
-      input.stars,
-      input.customerEmail,
-      input.questions
+    const questions = input.questions.map(
+      (question) => new Question(question.statement)
     );
+    const survey = Survey.create(code, input.name, questions);
     return this.surveyRepository.save(survey);
   }
 }
 
 type Input = {
   name: string;
-  targetAudience: string;
-  stars: number;
-  customerEmail: string;
   questions: Question[];
 };
 

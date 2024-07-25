@@ -1,3 +1,7 @@
 export default class Question {
-  constructor(readonly statement: string) {}
+  code?: string;
+
+  constructor(readonly statement: string) {
+    this.code = crypto.randomUUID();
+  }
 }

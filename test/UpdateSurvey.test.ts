@@ -9,7 +9,6 @@ test("Should update a survey", async () => {
   const surveyRepository = repositoryFactory.create();
 
   const name = "Pesquisa de satisfação";
-  const stars = 5;
   const questions = [
     {
       statement: "How often do you lift weights?",
@@ -20,9 +19,6 @@ test("Should update a survey", async () => {
   ];
   const input = {
     name,
-    targetAudience: "Sportsman",
-    stars,
-    customerEmail: "test@gmail.com",
     questions,
   };
 
@@ -30,7 +26,6 @@ test("Should update a survey", async () => {
   const surveyToUpdate = await createSurvey.execute(input);
 
   surveyToUpdate.name = "Pesquisa de esportista";
-  surveyToUpdate.stars = 3;
   surveyToUpdate.questions = [
     {
       statement: "How many times per week to you workout?",
@@ -41,9 +36,7 @@ test("Should update a survey", async () => {
 
   expect(updatedSurvey?.code).toBe(surveyToUpdate.code);
   expect(updatedSurvey?.name).not.toBe(name);
-  expect(updatedSurvey?.targetAudience).toBe(surveyToUpdate.targetAudience);
-  expect(updatedSurvey?.stars).not.toBe(stars);
-  expect(updatedSurvey?.questions).toHaveLength(1);
+  expect(updatedSurvey?.questions).toHaveLength(4);
   expect(updatedSurvey?.questions[0].statement).toBe(
     "How many times per week to you workout?"
   );

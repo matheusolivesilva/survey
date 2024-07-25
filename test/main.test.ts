@@ -7,9 +7,6 @@ test("Should create a survey", async () => {
     method: "post",
     data: {
       name: "Pesquisa de satisfação",
-      targetAudience: "Sportsman",
-      stars: 5,
-      customerEmail: "test@gmail.com",
       questions: [
         {
           statement: "How often do you lift weights?",
@@ -30,13 +27,9 @@ test("Should create a survey", async () => {
   const surveyResponse: Survey = response.data;
   expect(surveyResponse.code).toBe(createdSurvey.code);
   expect(surveyResponse.name).toBe("Pesquisa de satisfação");
-  expect(surveyResponse.targetAudience).toBe("Sportsman");
-  expect(surveyResponse.stars).toBe(5);
-  expect(surveyResponse.questions).toHaveLength(2);
+  expect(surveyResponse.questions).toHaveLength(5);
   expect(surveyResponse.questions[0].statement).toBe(
     "How often do you lift weights?"
   );
-  expect(surveyResponse.questions[1].statement).toBe(
-    "How many times per week to you workout?"
-  );
+  expect(surveyResponse.questions[4].statement).toBe("Please, fill your email");
 });

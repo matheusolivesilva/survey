@@ -1,38 +1,24 @@
+import { DefaultQuestionsEnum } from "./enum/DefaultQuestionsEnum";
 import Question from "./Question";
 
 export default class Survey {
   constructor(
     readonly code: string,
     readonly name: string,
-    readonly targetAudience: string,
-    readonly stars: number,
-    readonly customerEmail: string,
     readonly questions: Question[],
     readonly createdAt: Date,
     readonly updatedAt: Date
   ) {
-    this.validateTargetAudience(targetAudience);
-    this.validateStars(stars);
-    this.validateCustomerEmail(customerEmail);
     this.validateQuestions(questions);
+    this.generateDefaultQuestions();
   }
 
-  private validateTargetAudience(targetAudience: string): void {
-    if (targetAudience.length === 0) {
-      throw new Error("Target audience must be filled");
-    }
-  }
+  private generateDefaultQuestions(): void {
+    const keys = Object.values(DefaultQuestionsEnum);
 
-  private validateStars(stars: number): void {
-    if (stars < 0 || stars > 5) {
-      throw new Error("Stars must be between 0 and 5");
-    }
-  }
-
-  private validateCustomerEmail(customerEmail: string): void {
-    const emailPattern = /^[\w-]+(\.[\w-]+)*@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
-    if (this.customerEmail.toLowerCase().match(emailPattern)) return;
-    throw new Error("Invalid email");
+    keys.forEach((value) => {
+      this.questions.unshift(new Question(value));
+    });
   }
 
   private validateQuestions(questions: Question[]): void {
@@ -41,44 +27,16 @@ export default class Survey {
     }
   }
 
-  static create(
-    code: string,
-    name: string,
-    targetAudience: string,
-    stars: number,
-    customerEmail: string,
-    questions: Question[]
-  ): Survey {
-    return new Survey(
-      code,
-      name,
-      targetAudience,
-      stars,
-      customerEmail,
-      questions,
-      new Date(),
-      new Date()
-    );
+  static create(code: string, name: string, questions: Question[]): Survey {
+    return new Survey(code, name, questions, new Date(), new Date());
   }
 
   static buildExistingSurvey(
     code: string,
     name: string,
-    targetAudience: string,
-    stars: number,
-    customerEmail: string,
     questions: Question[],
     createdAt: Date
   ): Survey {
-    return new Survey(
-      code,
-      name,
-      targetAudience,
-      stars,
-      customerEmail,
-      questions,
-      createdAt,
-      new Date()
-    );
+    return new Survey(code, name, questions, createdAt, new Date());
   }
 }

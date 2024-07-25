@@ -9,13 +9,14 @@ export default class UpdateSurvey {
     const savedSurvey = await this.surveyRepository.get(input.code);
     if (!savedSurvey) return null;
 
+    const questions = input.questions.map(
+      (question) => new Question(question.statement)
+    );
+
     const surveyToUpdate = Survey.buildExistingSurvey(
       input.code,
       input.name,
-      input.targetAudience,
-      input.stars,
-      input.customerEmail,
-      input.questions,
+      questions,
       savedSurvey?.createdAt ?? new Date()
     );
 
@@ -31,9 +32,6 @@ export default class UpdateSurvey {
 type Input = {
   code: string;
   name: string;
-  targetAudience: string;
-  stars: number;
-  customerEmail: string;
   questions: Question[];
 };
 
