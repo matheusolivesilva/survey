@@ -1,29 +1,42 @@
-import axios from 'axios';
+import axios from "axios";
+import Survey from "../src/domain/entity/Survey";
 
-test('Should create a transaction', async () => {
-  const code = `${Math.floor(Math.random() * 1000)}`;
-
-  await axios({
-    url: 'http://localhost:3000/transactions',
-    method: 'post',
+test("Should create a survey", async () => {
+  const createdResponse = await axios({
+    url: "http://localhost:3000/surveys",
+    method: "post",
     data: {
-      code,
-      amount: 1000,
-      numberInstallments: 12,
-      paymentMethod: 'credit_card'
-    }
+      name: "Pesquisa de satisfação",
+      targetAudience: "Sportsman",
+      stars: 5,
+      customerEmail: "test@gmail.com",
+      questions: [
+        {
+          statement: "How often do you lift weights?",
+        },
+        {
+          statement: "How many times per week to you workout?",
+        },
+      ],
+    },
   });
+  const createdSurvey: Survey = createdResponse.data;
 
   const response = await axios({
-    url: `http://localhost:3000/transactions/${code}`,
-    method: 'get',
+    url: `http://localhost:3000/surveys/${createdSurvey.code}`,
+    method: "get",
   });
-  
-  const transaction = response.data;
-  expect(transaction.code).toBe(code);
-  expect(transaction.amount).toBe(1000);
-  expect(transaction.paymentMethod).toBe('credit_card');
-  expect(transaction.installments).toHaveLength(12);
-  expect(transaction.installments[0].amount).toBe(83.33);
-  expect(transaction.installments[11].amount).toBe(83.37)
+
+  const surveyResponse: Survey = response.data;
+  expect(surveyResponse.code).toBe(createdSurvey.code);
+  expect(surveyResponse.name).toBe("Pesquisa de satisfação");
+  expect(surveyResponse.targetAudience).toBe("Sportsman");
+  expect(surveyResponse.stars).toBe(5);
+  expect(surveyResponse.questions).toHaveLength(2);
+  expect(surveyResponse.questions[0].statement).toBe(
+    "How often do you lift weights?"
+  );
+  expect(surveyResponse.questions[1].statement).toBe(
+    "How many times per week to you workout?"
+  );
 });
