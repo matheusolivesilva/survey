@@ -1,15 +1,13 @@
-import ExpressAdapter from './infra/api/ExpressAdapter';
-import Router from './infra/api/Router';
-import PostgresSQLAdapter from './infra/database/PostgreSQLAdapter';
-import TransactionRepositoryFactory from './infra/repository/TransactionRepositoryFactory';
+import ExpressAdapter from "./infra/api/ExpressAdapter";
+import Router from "./infra/api/Router";
+import MongoDBConnection from "./infra/database/MongoDBConnection";
+import SurveyRepositoryFactory from "./infra/repository/SurveyRepositoryFactory";
 
-console.log();
-
-const connection = new PostgresSQLAdapter();
-const repositoryFactory = new TransactionRepositoryFactory(connection)
-const transactionRepository = repositoryFactory.create()
+const connection = new MongoDBConnection();
+const repositoryFactory = new SurveyRepositoryFactory(connection);
+const surveyRepository = repositoryFactory.create();
 
 const httpServer = new ExpressAdapter();
-const router = new Router(httpServer, transactionRepository);
+const router = new Router(httpServer, surveyRepository);
 router.init();
-httpServer.listen(3000)
+httpServer.listen(3000);
