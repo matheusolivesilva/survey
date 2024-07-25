@@ -20,7 +20,12 @@ export default class ExpressAdapter implements HttpServer {
   response(res: Response, method: string, output: any) {
     const responseByMethod: any = {
       post: () => res.status(HttpStatusCode.CREATED).json(output),
-      put: () => res.status(HttpStatusCode.OK).json(output),
+      put: () =>
+        output
+          ? res.status(HttpStatusCode.OK).json(output)
+          : res
+              .status(HttpStatusCode.NOT_FOUND)
+              .json({ message: "Resource not found" }),
       get: () =>
         output
           ? res.status(HttpStatusCode.OK).json(output)
