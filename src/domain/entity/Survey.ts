@@ -8,8 +8,8 @@ export default class Survey {
     readonly stars: number,
     readonly customerEmail: string,
     readonly questions: Question[],
-    readonly createdAt: Date = new Date(),
-    readonly updatedAt: Date = new Date()
+    readonly createdAt: Date,
+    readonly updatedAt: Date
   ) {
     this.validateTargetAudience(targetAudience);
     this.validateStars(stars);
@@ -57,6 +57,27 @@ export default class Survey {
       customerEmail,
       questions,
       new Date(),
+      new Date()
+    );
+  }
+
+  static buildExistingSurvey(
+    code: string,
+    name: string,
+    targetAudience: string,
+    stars: number,
+    customerEmail: string,
+    questions: Question[],
+    createdAt: Date
+  ): Survey {
+    return new Survey(
+      code,
+      name,
+      targetAudience,
+      stars,
+      customerEmail,
+      questions,
+      createdAt,
       new Date()
     );
   }

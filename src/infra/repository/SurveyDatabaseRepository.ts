@@ -13,4 +13,8 @@ export default class SurveyDatabaseRepository implements SurveyRepository {
   async get(code: string): Promise<Survey | null> {
     return SurveySchema.findOne({ code });
   }
+
+  async getOneAndUpdate(code: string, survey: Survey): Promise<Survey | null> {
+    return SurveySchema.findOneAndUpdate({ code }, survey, { new: true });
+  }
 }

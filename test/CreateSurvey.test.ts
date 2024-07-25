@@ -1,6 +1,5 @@
 import CreateSurvey from "../src/application/usecase/CreateSurvey";
 import GetSurvey from "../src/application/usecase/GetSurvey";
-import crypto from "crypto";
 import MongoDBConnection from "../src/infra/database/MongoDBConnection";
 import SurveyRepositoryFactory from "../src/infra/repository/SurveyRepositoryFactory";
 
