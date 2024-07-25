@@ -3,7 +3,7 @@ import Survey from "../../domain/entity/Survey";
 import Question from "../../domain/entity/Question";
 
 export default class CreateSurvey {
-  constructor(readonly transactionRepository: SurveyRepository) {}
+  constructor(readonly surveyRepository: SurveyRepository) {}
 
   async execute(input: Input): Promise<Output> {
     const code = crypto.randomUUID();
@@ -15,7 +15,7 @@ export default class CreateSurvey {
       input.customerEmail,
       input.questions
     );
-    return this.transactionRepository.save(survey);
+    return this.surveyRepository.save(survey);
   }
 }
 
