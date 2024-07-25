@@ -20,7 +20,7 @@ export default class ExpressAdapter implements HttpServer {
   response(res: Response, method: string, output: any) {
     const responseByMethod: any = {
       post: () => res.status(HttpStatusCode.CREATED).json(output),
-      update: () => res.status(HttpStatusCode.OK).json(output),
+      put: () => res.status(HttpStatusCode.OK).json(output),
       get: () =>
         output
           ? res.status(HttpStatusCode.OK).json(output)
