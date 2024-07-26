@@ -1,0 +1,60 @@
+POST http://localhost:3000/surveys
+Content-Type: application/json
+
+{
+    "name": "Survey 10",
+    "questions": [
+      { "statement": "What is your favorite programming language?" },
+      { "statement": "What is your favorite Linux Distro?" }
+    ]
+}
+
+### 
+GET http://localhost:3000/surveys/a387aa66-8e7a-4efa-93bd-defd9775f7c1
+
+###
+PUT http://localhost:3000/surveys/0272dd25-b11b-40d2-881e-67d30fe5549d
+Content-Type: application/json
+
+{
+    "questions": [
+      {
+        "code": "aa724c78-ab22-4745-bb84-259e2ee60847",
+        "statement": "Please, fill your email now"
+      },
+      { 
+        "code": "aba857cf-7115-48b8-a9d0-4a7955720307",
+        "statement": "What is your favorite framework?" 
+      },
+      { 
+        "statement": "What is your favorite Windows?" 
+      },
+      { 
+        "statement": "What is your favorite smartphone OS?" 
+      }
+    ]
+}
+
+###
+POST http://localhost:3000/surveys/a387aa66-8e7a-4efa-93bd-defd9775f7c1/answers
+Content-Type: application/json
+
+{
+    "surveyCode": "a387aa66-8e7a-4efa-93bd-defd9775f7c1",
+    "targetAudience": "Geeks",
+    "customerEmail": "test@test.com",
+    "stars": 4,
+    "answers": [
+      { "questionCode": "bee96669-7f2c-4542-889d-4590b73a2dd2", "answer": "test@test.com"},
+      { "questionCode": "a9e68473-b75a-4935-beee-22bcfef429d6", "answer": "3"},
+      { "questionCode": "e31d2eb7-d580-49fc-9aca-c88e8e730d24", "answer": "Geeks"},
+      { "questionCode": "b367fb3d-902e-4ea0-af3d-370651fa1bf3", "answer": "Windows 10"},
+      { "questionCode": "a32cef58-2b46-44ac-9491-fbafcc419e6e", "answer": "Android Kitkat"}
+    ]
+}
+
+### 
+GET http://localhost:3000/answers/Geeks?sort=desc
+
+### 
+GET http://localhost:3000/surveys/export/a387aa66-8e7a-4efa-93bd-defd9775f7c1?sort=desc
