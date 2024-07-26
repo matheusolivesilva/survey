@@ -12,6 +12,13 @@ export default class SurveyMemoryRepository implements SurveyRepository {
     this.answer = [];
   }
 
+  getSurveyWithAnswers(
+    surveyCode: string,
+    sort: SortDirectionEnum
+  ): Promise<any[]> {
+    throw new Error("Method not implemented.");
+  }
+
   getFilledAnswersByAudience(
     targetAudience: string,
     sort: SortDirectionEnum

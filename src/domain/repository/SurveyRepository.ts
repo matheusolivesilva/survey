@@ -11,4 +11,8 @@ export default interface SurveyRepository {
     targetAudience: string,
     sort: SortDirectionEnum
   ): Promise<Answer[]>;
+  getSurveyWithAnswers(
+    surveyCode: string,
+    sort: SortDirectionEnum
+  ): Promise<any[]>;
 }

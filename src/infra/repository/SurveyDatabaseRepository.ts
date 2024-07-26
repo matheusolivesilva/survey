@@ -18,6 +18,35 @@ export default class SurveyDatabaseRepository implements SurveyRepository {
     });
   }
 
+  getSurveyWithAnswers(
+    surveyCode: string,
+    sort: SortDirectionEnum
+  ): Promise<any[]> {
+    return AnswerSchema.aggregate([
+      {
+        $lookup: {
+          from: "surveys",
+          localField: "surveyCode",
+          foreignField: "code",
+          as: "survey",
+        },
+      },
+      {
+        $unwind: "$survey",
+      },
+      {
+        $match: {
+          "survey.code": surveyCode,
+        },
+      },
+      {
+        $sort: {
+          "survey.stars": sort === SortDirectionEnum.ASCENDING ? 1 : -1,
+        },
+      },
+    ]);
+  }
+
   saveAnswer(answer: Answer): Promise<Answer> {
     return AnswerSchema.create(answer);
   }
