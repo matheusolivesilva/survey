@@ -13,7 +13,7 @@ export default class ExpressAdapter implements HttpServer {
 
   on(method: HttpMethods, url: string, callback: Function): void {
     this.app[method](url, async (req: Request, res: Response) => {
-      const output = await callback(req.params, req.body);
+      const output = await callback(req.params, req.body, req.query);
       this.sendResponse(res, method, output);
     });
   }

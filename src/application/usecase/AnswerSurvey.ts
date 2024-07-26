@@ -8,7 +8,6 @@ export default class AnswerSurvey {
   constructor(readonly surveyRepository: SurveyRepository) {}
 
   async execute(input: Input): Promise<Output | null> {
-    console.log("input", input);
     const survey = await this.surveyRepository.get(input.surveyCode);
     if (!survey) return null;
 

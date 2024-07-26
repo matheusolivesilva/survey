@@ -7,6 +7,8 @@ import UpdateSurvey from "../../application/usecase/UpdateSurvey";
 import AnswerSurvey from "../../application/usecase/AnswerSurvey";
 import AnswerDTO from "../../application/dto/AnswerDTO";
 import { HttpMethods } from "./enums/HttpMethods";
+import GetAnswers from "../../application/usecase/GetAnswers";
+import { SortDirectionEnum } from "../../domain/repository/enum/SortDirectionEnum";
 
 export default class Router {
   constructor(
@@ -18,7 +20,7 @@ export default class Router {
     this.httpServer.on(
       HttpMethods.POST,
       "/surveys",
-      async (params: any, body: SurveyDTO) => {
+      async (params: any, body: SurveyDTO, query: any) => {
         const createSurvey = new CreateSurvey(this.surveyRepository);
         return await createSurvey.execute(body);
       }
@@ -27,7 +29,7 @@ export default class Router {
     this.httpServer.on(
       HttpMethods.GET,
       "/surveys/:code",
-      async (params: any, body: any) => {
+      async (params: any, body: any, query: any) => {
         const getSurvey = new GetSurvey(this.surveyRepository);
         return await getSurvey.execute(params.code);
       }
@@ -36,7 +38,7 @@ export default class Router {
     this.httpServer.on(
       HttpMethods.PUT,
       "/surveys/:code",
-      async (params: { code: string }, body: SurveyDTO) => {
+      async (params: { code: string }, body: SurveyDTO, query: any) => {
         const updateSurvey = new UpdateSurvey(this.surveyRepository);
         return await updateSurvey.execute({ ...body, code: params.code });
       }
@@ -45,11 +47,27 @@ export default class Router {
     this.httpServer.on(
       HttpMethods.POST,
       "/surveys/:surveyCode/answers",
-      async (params: { surveyCode: string }, body: AnswerDTO) => {
+      async (params: { surveyCode: string }, body: AnswerDTO, query: any) => {
         const createSurvey = new AnswerSurvey(this.surveyRepository);
         return await createSurvey.execute({
           ...body,
           surveyCode: params.surveyCode,
+        });
+      }
+    );
+
+    this.httpServer.on(
+      HttpMethods.GET,
+      "/answers/:audience",
+      async (
+        params: { audience: string },
+        body: any,
+        query: { sort: SortDirectionEnum }
+      ) => {
+        const getAnswer = new GetAnswers(this.surveyRepository);
+        return await getAnswer.execute({
+          audience: params.audience,
+          sort: query.sort,
         });
       }
     );

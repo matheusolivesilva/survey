@@ -1,25 +1,35 @@
 import Answer from "../../domain/entity/Answer";
 import Survey from "../../domain/entity/Survey";
-import { SortDirection } from "../../domain/repository/enum/SortDirection";
+import { SortDirectionEnum } from "../../domain/repository/enum/SortDirectionEnum";
 import SurveyRepository from "../../domain/repository/SurveyRepository";
 
 export default class SurveyMemoryRepository implements SurveyRepository {
   survey: Survey[];
-  answer: Answer = {} as Answer;
+  answer: Answer[];
 
   constructor() {
     this.survey = [];
+    this.answer = [];
   }
 
   getFilledAnswersByAudience(
-    audience: string,
-    sort: SortDirection
+    targetAudience: string,
+    sort: SortDirectionEnum
   ): Promise<Answer[]> {
-    throw new Error("Method not implemented.");
+    const answerByAudience = this.answer.filter(
+      (answer) => answer.targetAudience === targetAudience
+    );
+
+    return Promise.resolve(
+      answerByAudience.sort((a, b) => {
+        if (sort === SortDirectionEnum.ASCENDING) return a.stars - b.stars;
+        return b.stars - a.stars;
+      })
+    );
   }
 
   async saveAnswer(answer: Answer): Promise<Answer> {
-    this.answer = answer;
+    this.answer.push(answer);
     return answer;
   }
 

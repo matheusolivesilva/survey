@@ -1,6 +1,6 @@
 import Answer from "../entity/Answer";
 import Survey from "../entity/Survey";
-import { SortDirection } from "./enum/SortDirection";
+import { SortDirectionEnum } from "./enum/SortDirectionEnum";
 
 export default interface SurveyRepository {
   save(survey: Survey): Promise<Survey>;
@@ -8,7 +8,7 @@ export default interface SurveyRepository {
   getOneAndUpdate(code: string, survey: Survey): Promise<Survey | null>;
   get(code: string): Promise<Survey | null>;
   getFilledAnswersByAudience(
-    audience: string,
-    sort: SortDirection
-  ): Promise<any[]>;
+    targetAudience: string,
+    sort: SortDirectionEnum
+  ): Promise<Answer[]>;
 }

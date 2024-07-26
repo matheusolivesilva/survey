@@ -1,6 +1,6 @@
 import Answer from "../../domain/entity/Answer";
 import Survey from "../../domain/entity/Survey";
-import { SortDirection } from "../../domain/repository/enum/SortDirection";
+import { SortDirectionEnum } from "../../domain/repository/enum/SortDirectionEnum";
 import SurveyRepository from "../../domain/repository/SurveyRepository";
 import Connection from "../database/Connection";
 import { AnswerSchema } from "../database/mongoose/models/Answer";
@@ -10,10 +10,12 @@ export default class SurveyDatabaseRepository implements SurveyRepository {
   constructor(readonly connection: Connection) {}
 
   getFilledAnswersByAudience(
-    audience: string,
-    sort: SortDirection
-  ): Promise<any[]> {
-    return AnswerSchema.find({ audience });
+    targetAudience: string,
+    sort: SortDirectionEnum
+  ): Promise<Answer[]> {
+    return AnswerSchema.find({ targetAudience }).sort({
+      stars: sort === SortDirectionEnum.ASCENDING ? 1 : -1,
+    });
   }
 
   saveAnswer(answer: Answer): Promise<Answer> {
