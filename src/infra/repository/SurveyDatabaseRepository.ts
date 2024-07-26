@@ -1,5 +1,6 @@
 import Answer from "../../domain/entity/Answer";
 import Survey from "../../domain/entity/Survey";
+import { SortDirection } from "../../domain/repository/enum/SortDirection";
 import SurveyRepository from "../../domain/repository/SurveyRepository";
 import Connection from "../database/Connection";
 import { AnswerSchema } from "../database/mongoose/models/Answer";
@@ -8,8 +9,15 @@ import { SurveySchema } from "../database/mongoose/models/Survey";
 export default class SurveyDatabaseRepository implements SurveyRepository {
   constructor(readonly connection: Connection) {}
 
-  saveAnswers(answers: Answer[]): Promise<Answer[]> {
-    return AnswerSchema.insertMany(answers);
+  getFilledAnswersByAudience(
+    audience: string,
+    sort: SortDirection
+  ): Promise<any[]> {
+    return AnswerSchema.find({ audience });
+  }
+
+  saveAnswer(answer: Answer): Promise<Answer> {
+    return AnswerSchema.create(answer);
   }
 
   async save(survey: Survey): Promise<Survey> {

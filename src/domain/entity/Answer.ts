@@ -1,21 +1,23 @@
+import QuestionAnswer from "./QuestionAnswer";
+
 export default class Answer {
   code?: string;
   surveyCode: string;
 
   constructor(
-    readonly questionCode: string,
-    readonly answer: string,
+    readonly targetAudience: string,
+    readonly customerEmail: string,
+    readonly stars: number,
+    readonly answers: QuestionAnswer[],
     readonly createdAt: Date = new Date(),
     readonly updatedAt: Date = new Date()
   ) {
-    this.validateAnswer(answer);
+    this.validateAnswers(answers);
     this.surveyCode = "";
   }
 
-  private validateAnswer(answer: string): void {
-    if (answer.length === 0) {
-      throw new Error("Answer must be filled");
-    }
+  private validateAnswers(answers: QuestionAnswer[]): void {
+    if (answers.length === 0) throw new Error("Answer must be filled");
   }
 
   setSurveyCode(surveyCode: string): void {

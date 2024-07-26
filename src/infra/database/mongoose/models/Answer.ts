@@ -4,8 +4,15 @@ import Answer from "../../../../domain/entity/Answer";
 const schema = new Schema<Answer>({
   code: { type: String, required: true },
   surveyCode: { type: String, required: true },
-  questionCode: { type: String, required: true },
-  answer: { type: String, required: true },
+  targetAudience: { type: String, required: true },
+  customerEmail: { type: String, required: true },
+  stars: { type: Number, required: true },
+  answers: [
+    {
+      questionCode: { type: String, required: true },
+      answer: { type: String, required: true },
+    },
+  ],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

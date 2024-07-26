@@ -1,5 +1,6 @@
 import Answer from "../../domain/entity/Answer";
 import { DefaultQuestionsEnum } from "../../domain/entity/enum/DefaultQuestionsEnum";
+import QuestionAnswer from "../../domain/entity/QuestionAnswer";
 import Survey from "../../domain/entity/Survey";
 import SurveyRepository from "../../domain/repository/SurveyRepository";
 
@@ -7,28 +8,40 @@ export default class AnswerSurvey {
   constructor(readonly surveyRepository: SurveyRepository) {}
 
   async execute(input: Input): Promise<Output | null> {
+    console.log("input", input);
     const survey = await this.surveyRepository.get(input.surveyCode);
     if (!survey) return null;
 
-    const answersToSave: Answer[] = [];
+    const questionsToSave: QuestionAnswer[] = [];
     let questionNotFound = false;
 
     input.answers.map((answer) => {
-      const question = survey.questions.find(
+      const existsQuestions = survey.questions.some(
         (question) => question.code === answer.questionCode
       );
-      if (!question || questionNotFound) {
+      if (!existsQuestions || questionNotFound) {
         questionNotFound = true;
         return;
       }
-      const answerToSave = new Answer(answer.questionCode, answer.answer);
-      answerToSave.setSurveyCode(input.surveyCode);
-      answerToSave.generateCode();
-      answersToSave.push(answerToSave);
+      questionsToSave.push(
+        new QuestionAnswer(answer.questionCode, answer.answer)
+      );
     });
 
+    if (questionNotFound) return null;
+
+    const answerToSave = new Answer(
+      input.targetAudience,
+      input.customerEmail,
+      input.stars,
+      questionsToSave
+    );
+
+    answerToSave.setSurveyCode(input.surveyCode);
+    answerToSave.generateCode();
+
     this.getDefaultQuestionsCodes(survey).map((questionCode) => {
-      const answer = answersToSave.find(
+      const answer = answerToSave.answers.find(
         (answer) => answer.questionCode === questionCode
       );
       if (!answer) {
@@ -37,10 +50,8 @@ export default class AnswerSurvey {
       }
     });
 
-    if (questionNotFound) return null;
-
     return {
-      answers: await this.surveyRepository.saveAnswers(answersToSave),
+      answer: await this.surveyRepository.saveAnswer(answerToSave),
     };
   }
 
@@ -63,9 +74,12 @@ export default class AnswerSurvey {
 
 type Input = {
   surveyCode: string;
-  answers: Answer[];
+  targetAudience: string;
+  customerEmail: string;
+  stars: number;
+  answers: QuestionAnswer[];
 };
 
 type Output = {
-  answers: Answer[];
+  answer: Answer;
 };
