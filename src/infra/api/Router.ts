@@ -4,6 +4,9 @@ import CreateSurvey from "../../application/usecase/CreateSurvey";
 import SurveyDTO from "../../application/dto/SurveyDTO";
 import GetSurvey from "../../application/usecase/GetSurvey";
 import UpdateSurvey from "../../application/usecase/UpdateSurvey";
+import AnswerSurvey from "../../application/usecase/AnswerSurvey";
+import AnswerDTO from "../../application/dto/AnswerDTO";
+import { HttpMethods } from "./enums/HttpMethods";
 
 export default class Router {
   constructor(
@@ -13,7 +16,7 @@ export default class Router {
 
   async init() {
     this.httpServer.on(
-      "post",
+      HttpMethods.POST,
       "/surveys",
       async (params: any, body: SurveyDTO) => {
         const createSurvey = new CreateSurvey(this.surveyRepository);
@@ -22,7 +25,7 @@ export default class Router {
     );
 
     this.httpServer.on(
-      "get",
+      HttpMethods.GET,
       "/surveys/:code",
       async (params: any, body: any) => {
         const getSurvey = new GetSurvey(this.surveyRepository);
@@ -31,11 +34,23 @@ export default class Router {
     );
 
     this.httpServer.on(
-      "put",
+      HttpMethods.PUT,
       "/surveys/:code",
-      async (params: any, body: SurveyDTO) => {
+      async (params: { code: string }, body: SurveyDTO) => {
         const updateSurvey = new UpdateSurvey(this.surveyRepository);
         return await updateSurvey.execute({ ...body, code: params.code });
+      }
+    );
+
+    this.httpServer.on(
+      HttpMethods.POST,
+      "/surveys/:surveyCode/answers",
+      async (params: { surveyCode: string }, body: AnswerDTO) => {
+        const createSurvey = new AnswerSurvey(this.surveyRepository);
+        return await createSurvey.execute({
+          ...body,
+          surveyCode: params.surveyCode,
+        });
       }
     );
   }

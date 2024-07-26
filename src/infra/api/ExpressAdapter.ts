@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import HttpServer from "./HttpServer";
 import HttpStatusCode from "./enums/HttpStatusCode";
+import { HttpMethods } from "./enums/HttpMethods";
 
 export default class ExpressAdapter implements HttpServer {
   app: any;
@@ -10,34 +11,32 @@ export default class ExpressAdapter implements HttpServer {
     this.app.use(express.json());
   }
 
-  on(method: string, url: string, callback: Function): void {
+  on(method: HttpMethods, url: string, callback: Function): void {
     this.app[method](url, async (req: Request, res: Response) => {
       const output = await callback(req.params, req.body);
-      this.response(res, method, output);
+      this.sendResponse(res, method, output);
     });
   }
 
-  response(res: Response, method: string, output: any) {
+  sendResponse(res: Response, method: HttpMethods, output: any) {
     const responseByMethod: any = {
-      post: () => res.status(HttpStatusCode.CREATED).json(output),
-      put: () =>
-        output
-          ? res.status(HttpStatusCode.OK).json(output)
-          : res
-              .status(HttpStatusCode.NOT_FOUND)
-              .json({ message: "Resource not found" }),
-      get: () =>
-        output
-          ? res.status(HttpStatusCode.OK).json(output)
-          : res
-              .status(HttpStatusCode.NOT_FOUND)
-              .json({ message: "Resource not found" }),
+      post: () => this.response(res, HttpStatusCode.CREATED, output),
+      put: () => this.response(res, HttpStatusCode.OK, output),
+      get: () => this.response(res, HttpStatusCode.OK, output),
     };
 
     return (
       responseByMethod[method]?.() ||
       res.status(405).json({ message: "Method not allowed" })
     );
+  }
+
+  response(res: Response, status: HttpStatusCode, output: any) {
+    if (output) return res.status(status).json(output);
+
+    return res
+      .status(HttpStatusCode.NOT_FOUND)
+      .json({ message: "Resource not found" });
   }
 
   listen(port: number): void {

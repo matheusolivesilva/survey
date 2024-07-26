@@ -1,11 +1,19 @@
+import Answer from "../../domain/entity/Answer";
 import Survey from "../../domain/entity/Survey";
 import SurveyRepository from "../../domain/repository/SurveyRepository";
 
 export default class SurveyMemoryRepository implements SurveyRepository {
   survey: Survey[];
+  answer: Answer[];
 
   constructor() {
     this.survey = [];
+    this.answer = [];
+  }
+
+  async saveAnswers(answers: Answer[]): Promise<Answer[]> {
+    this.answer = answers;
+    return answers;
   }
 
   getOneAndUpdate(code: string, data: Survey): Promise<Survey | null> {

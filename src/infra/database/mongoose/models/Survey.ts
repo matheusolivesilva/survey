@@ -15,6 +15,4 @@ const schema = new Schema<Survey>({
 });
 
 schema.index({ code: 1 });
-schema.index({ stars: 1 });
-schema.index({ targetAudience: 1 });
 export const SurveySchema = model<Survey>("surveys", schema);

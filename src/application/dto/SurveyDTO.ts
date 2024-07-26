@@ -1,5 +1,4 @@
 import Question from "../../domain/entity/Question";
-import QuestionDTO from "./QuestionDTO";
 
 export default class SurveyDTO {
   constructor(
