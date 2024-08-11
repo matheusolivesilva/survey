@@ -42,7 +42,7 @@ Content-Type: application/json
 {
     "surveyCode": "a387aa66-8e7a-4efa-93bd-defd9775f7c1",
     "targetAudience": "Geeks",
-    "customerEmail": "test@test.com",
+    "customerEmail": "test@gmail.com",
     "stars": 4,
     "answers": [
       { "questionCode": "bee96669-7f2c-4542-889d-4590b73a2dd2", "answer": "test@test.com"},

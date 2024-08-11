@@ -13,12 +13,14 @@ import { SortDirectionEnum } from "../../domain/repository/enum/SortDirectionEnu
 import ExportAnswers from "../../application/usecase/ExportAnswers";
 import FileGeneratorRepository from "../../domain/repository/FileGeneratorRepository";
 import { Response } from "express";
+import EmailSenderRepository from "../../domain/repository/EmailSenderRepository";
 
 export default class Router {
   constructor(
     readonly httpServer: HttpServer,
     readonly surveyRepository: SurveyRepository,
-    readonly fileGeneratorRepository: FileGeneratorRepository
+    readonly fileGeneratorRepository: FileGeneratorRepository,
+    readonly emailSenderRepository: EmailSenderRepository
   ) {}
 
   async init() {
@@ -66,7 +68,10 @@ export default class Router {
         query: any,
         res: Response
       ) => {
-        const createSurvey = new AnswerSurvey(this.surveyRepository);
+        const createSurvey = new AnswerSurvey(
+          this.surveyRepository,
+          this.emailSenderRepository
+        );
         return await createSurvey.execute({
           ...body,
           surveyCode: params.surveyCode,

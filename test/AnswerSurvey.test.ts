@@ -3,12 +3,14 @@ import CreateSurvey from "../src/application/usecase/CreateSurvey";
 import Question from "../src/domain/entity/Question";
 import QuestionAnswer from "../src/domain/entity/QuestionAnswer";
 import MongoDBConnection from "../src/infra/database/MongoDBConnection";
+import EmailSenderRepositoryImpl from "../src/infra/repository/EmailSenderRepositoryImpl";
 import SurveyRepositoryFactory from "../src/infra/repository/SurveyRepositoryFactory";
 
 test("Should create a survey", async () => {
   const connection = new MongoDBConnection();
   const repositoryFactory = new SurveyRepositoryFactory(connection);
   const surveyRepository = repositoryFactory.create();
+  const emailSenderRepository = new EmailSenderRepositoryImpl();
 
   const input = {
     name: "Survey with answers",
@@ -37,7 +39,10 @@ test("Should create a survey", async () => {
       new QuestionAnswer(createdSurvey.questions[4].code || "", "3 times"),
     ],
   };
-  const answerSurvey = new AnswerSurvey(surveyRepository);
+  const answerSurvey = new AnswerSurvey(
+    surveyRepository,
+    emailSenderRepository
+  );
   const createdAnswers = await answerSurvey.execute(answersInput);
 
   expect(createdAnswers?.answer.surveyCode).toBe(createdSurvey.code);
@@ -49,5 +54,6 @@ test("Should create a survey", async () => {
   );
   expect(createdAnswers?.answer.answers[4].answer).toBe("3 times");
   expect(createdAnswers?.answer.answers).toHaveLength(5);
+  expect(createdAnswers?.wasEmailSent).toBeTruthy();
   await connection.close();
 });

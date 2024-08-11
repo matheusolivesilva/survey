@@ -2,10 +2,14 @@ import Answer from "../../domain/entity/Answer";
 import { DefaultQuestionsEnum } from "../../domain/entity/enum/DefaultQuestionsEnum";
 import QuestionAnswer from "../../domain/entity/QuestionAnswer";
 import Survey from "../../domain/entity/Survey";
+import EmailSenderRepository from "../../domain/repository/EmailSenderRepository";
 import SurveyRepository from "../../domain/repository/SurveyRepository";
 
 export default class AnswerSurvey {
-  constructor(readonly surveyRepository: SurveyRepository) {}
+  constructor(
+    readonly surveyRepository: SurveyRepository,
+    readonly emailSenderRepository: EmailSenderRepository
+  ) {}
 
   async execute(input: Input): Promise<Output | null> {
     const survey = await this.surveyRepository.get(input.surveyCode);
@@ -49,8 +53,13 @@ export default class AnswerSurvey {
       }
     });
 
+    const wasEmailSent = await this.emailSenderRepository.send(
+      input.customerEmail
+    );
+
     return {
       answer: await this.surveyRepository.saveAnswer(answerToSave),
+      wasEmailSent,
     };
   }
 
@@ -81,4 +90,5 @@ type Input = {
 
 type Output = {
   answer: Answer;
+  wasEmailSent: boolean;
 };
